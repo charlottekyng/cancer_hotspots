@@ -1,0 +1,34 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=PASS,Description="All filters passed">
+##source=mskcc, based on Chang et al
+##contig=<ID=1>
+##contig=<ID=2>
+##contig=<ID=3>
+##contig=<ID=4>
+##contig=<ID=5>
+##contig=<ID=6>
+##contig=<ID=7>
+##contig=<ID=8>
+##contig=<ID=9>
+##contig=<ID=10>
+##contig=<ID=11>
+##contig=<ID=12>
+##contig=<ID=13>
+##contig=<ID=14>
+##contig=<ID=15>
+##contig=<ID=16>
+##contig=<ID=17>
+##contig=<ID=18>
+##contig=<ID=19>
+##contig=<ID=20>
+##contig=<ID=21>
+##contig=<ID=22>
+##contig=<ID=X>
+##INFO=<ID=HOTSPOTNC_GENE,Number=1,Type=String,Description="HOTSPOT HUGO gene symbol">
+##INFO=<ID=HOTSPOTNC_HGVSc,Number=A,Type=String,Description="HOTSPOT HGVSc">
+##INFO=<ID=HOTSPOTNC,Number=0,Type=Flag,Description="Hotspot flag">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr5	1295228	.	G	A	.	.	HOTSPOTNC;HOTSPOTNC_GENE=TERT;HOTSPOTNC_HGVSc=c.-150C>T
+chr5	1295250	.	G	A	.	.	HOTSPOTNC;HOTSPOTNC_GENE=TERT;HOTSPOTNC_HGVSc=c.-128C>T
+chr10	115511590	.	G	C	.	.	HOTSPOTNC;HOTSPOTNC_GENE=PLEKHS1;HOTSPOTNC_HGVSc=.
+chr10	115511593	.	C	T	.	.	HOTSPOTNC;HOTSPOTNC_GENE=PLEKHS1;HOTSPOTNC_HGVSc=.
