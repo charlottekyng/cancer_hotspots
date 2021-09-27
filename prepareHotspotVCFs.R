@@ -147,10 +147,10 @@ indel <- read.delim(as.character(opt[["indel_hotspots"]]), as.is = T)
 muts$hotindel <- apply(muts, 1, function(x){
   if (!grepl("inframe", x["EFFECT"])) {
     "."
-  } else if (length(as.character(unlist(indel[which(indel$CHROM == x["CHROM"] & indel$GENE == x["GENE"] & indel$aa_end >= x["AA.pos"] & indel$aa_start <= x["AA.pos.end"]), which(colnames(indel) == "hotspot_type")]))) == 0) {
+  } else if (length(as.character(unlist(indel[which(indel$CHROM == x["CHROM"] & indel$GENE == x["GENE"] & x["AA.pos"] >= indel$aa_start & x["AA.pos.end"] <= indel$aa_end), which(colnames(indel) == "hotspot_type")]))) == 0) {
     "."
   } else {
-    as.character(unlist(indel[which(indel$CHROM == x["CHROM"] & indel$GENE == x["GENE"] & indel$aa_end >= x["AA.pos"] & indel$aa_start <= x["AA.pos.end"]), which(colnames(indel) == "hotspot_type")]))
+    as.character(unlist(indel[which(indel$CHROM == x["CHROM"] & indel$GENE == x["GENE"] & x["AA.pos"] >= indel$aa_start & x["AA.pos.end"] <= indel$aa_end), which(colnames(indel) == "hotspot_type")]))
   }
 })
 
