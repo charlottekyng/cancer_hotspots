@@ -6,7 +6,6 @@
 # Load packages and parse inputs #
 ##################################
 
-.libPaths("/cluster/dataset/socibp/assets/testing/tumoronly/_nf-workflow/Rlibrary")
 library("optparse")
 
 # define argument list and data types
