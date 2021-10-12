@@ -106,10 +106,10 @@ splice <- read.delim(as.character(opt[["splicesite_hotspots"]]), as.is = T)
 muts$hotsplice <- apply(muts, 1, function(x){
   if (!grepl("splice_acceptor_variant|splice_donor_variant", x["EFFECT"])) {
     "."
-  } else if (length(as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot.type")]))) == 0) {
+  } else if (length(as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot_type")]))) == 0) {
     "."
   } else {
-    as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot.type")]))
+    as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot_type")]))
   }
 })
 

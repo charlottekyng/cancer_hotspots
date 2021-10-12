@@ -1,4 +1,4 @@
-CHROM	GENE final	c_pos	hotspot type	mutation type
+CHROM	GENE	c_pos	hotspot_type	mutation_type
 chr1	ARID1A	c.2732	HOTSPOT	splice
 chr1	ARID1A	c.2733	HOTSPOT	splice
 chr2	CASP8	c.727	HOTSPOT	splice
