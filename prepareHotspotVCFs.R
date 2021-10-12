@@ -65,9 +65,11 @@ if ( opt[["skip_3D"]] == "yes" ) {
 }
 
 # go over each mut row and fetch same chrom/gene/aa_ref/aa_pos in hotspots. 
-# Consider only missense_variant/stop_gained/initiator_codon_variant/start_lost because other effects are not real single aa hotspot changes, and we don't want to be tagging those.
+# Consider only missense_variant/stop_gained/initiator_codon_variant/start_lost because other effects are not real single aa hotspot changes, and we don't want to be tagging those. Omit indels.
 muts$hotspot <- apply(muts, 1, function(x){
-  if (!grepl("missense_variant|stop_gained|initiator_codon_variant|start_lost", x["EFFECT"])) {
+  if (grepl("frameshift|inframe", x["EFFECT"])) {
+    "."
+  } else if (!grepl("missense_variant|stop_gained|initiator_codon_variant|start_lost", x["EFFECT"])) {
       "."
   } else if (length(as.character(unlist(hotspots[which(hotspots$CHROM == x["CHROM"] & hotspots$GENE == x["GENE"] & hotspots$aa_ref == x["AA.ref"] & hotspots$aa_pos == x["AA.pos"]),which(colnames(hotspots) == "hotspot_type")]))) == 0) {
     "."

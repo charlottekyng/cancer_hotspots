@@ -113,6 +113,9 @@ chr17	CD79B	c.553	HOTSPOT	splice
 chr19	STK11	c.289	HOTSPOT	splice
 chr19	STK11	c.290	HOTSPOT	splice
 chr19	STK11	c.291	HOTSPOT	splice
+chr19	STK11	c.374	HOTSPOT	splice
+chr19	STK11	c.375	HOTSPOT	splice
+chr19	STK11	c.464	HOTSPOT	splice
 chr19	STK11	c.465	HOTSPOT	splice
 chr19	STK11	c.597	HOTSPOT	splice
 chr19	STK11	c.598	HOTSPOT	splice
@@ -120,6 +123,7 @@ chr19	STK11	c.734	HOTSPOT	splice
 chr19	STK11	c.735	HOTSPOT	splice
 chr19	STK11	c.862	HOTSPOT	splice
 chr19	STK11	c.863	HOTSPOT	splice
+chr19	STK11	c.920	HOTSPOT	splice
 chr19	STK11	c.921	HOTSPOT	splice
 chr19	CIC	c.3179	HOTSPOT	splice
 chr22	EP300	c.4286	HOTSPOT	splice
