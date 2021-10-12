@@ -65,7 +65,7 @@ if ( opt[["skip_3D"]] == "yes" ) {
 }
 
 # go over each mut row and fetch same chrom/gene/aa_ref/aa_pos in hotspots. 
-# Consider only missense_variant/stop_gained/initiator_codon_variant/start_lost because other effects are not real single aa hotspot changes, and we don't want to be rescuing those.
+# Consider only missense_variant/stop_gained/initiator_codon_variant/start_lost because other effects are not real single aa hotspot changes, and we don't want to be tagging those.
 muts$hotspot <- apply(muts, 1, function(x){
   if (!grepl("missense_variant|stop_gained|initiator_codon_variant|start_lost", x["EFFECT"])) {
       "."
@@ -101,15 +101,15 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotspot),])) > 0) {
 ############################
 splice <- read.delim(as.character(opt[["splicesite_hotspots"]]), as.is = T)
 
-# go over each mut row and fetch same chrom/gene/pos/ in splice. Consider only splice_acceptor_variant/splice_donor_variant because other effects are not real splicing effects, and we don't want to be rescuing those.
+# go over each mut row and fetch same chrom/gene/pos/ in splice. Consider only splice_acceptor_variant/splice_donor_variant because other effects are not real splicing effects, and we don't want to be tagging those.
 
 muts$hotsplice <- apply(muts, 1, function(x){
   if (!grepl("splice_acceptor_variant|splice_donor_variant", x["EFFECT"])) {
     "."
-  } else if (length(as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot_type")]))) == 0) {
+  } else if (length(as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot.type")]))) == 0) {
     "."
   } else {
-    as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot_type")]))
+    as.character(unlist(splice[which(splice$CHROM == x["CHROM"] & splice$GENE == x["GENE"] & splice$c_pos == x["c.pos"]), which(colnames(splice) == "hotspot.type")]))
   }
 })
 
@@ -141,7 +141,7 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotsplice),])) > 0) {
 
 indel <- read.delim(as.character(opt[["indel_hotspots"]]), as.is = T)
 
-# go over each mut row and fetch same chrom/gene/aa_start/aa_end/ in indel. Consider only inframe indels, we don't want to be rescuing other frameshifts.
+# go over each mut row and fetch same chrom/gene/aa_start/aa_end/ in indel. Consider only inframe indels, we don't want to be tagging other frameshifts.
 
 muts$hotindel <- apply(muts, 1, function(x){
   if (!grepl("inframe", x["EFFECT"])) {
