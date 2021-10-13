@@ -26,10 +26,10 @@ chr5	PIK3R1	c.1746	HOTSPOT	splice
 chr7	MET	c.3082	HOTSPOT	splice
 chr7	BRAF	c.981	HOTSPOT	splice
 chr7	BRAF	c.980	HOTSPOT	splice
-chr9	CDKN2A	c.*102	HOTSPOT	splice
-chr9	CDKN2A	c.*100	HOTSPOT	splice
-chr9	CDKN2A	c.*101	HOTSPOT	splice
-chr9	CDKN2A	c.317	HOTSPOT	splice
+chr9	CDKN2A	c.*151	HOTSPOT	splice
+chr9	CDKN2A	c.456	HOTSPOT	splice
+chr9	CDKN2A	c.457	HOTSPOT	splice
+chr9	CDKN2A	c.151	HOTSPOT	splice
 chr9	TSC1	c.2391	HOTSPOT	splice
 chr10	PTEN	c.209	HOTSPOT	splice
 chr10	PTEN	c.210	HOTSPOT	splice
