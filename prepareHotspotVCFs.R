@@ -16,6 +16,8 @@ option_list <- list(
                help="See help of main.nf", metavar="character"),
   make_option(c("--hotspots"), type="character", default = NULL, 
               help="See help of main.nf", metavar="character"),
+  make_option(c("--noncoding_hotspots"), type="character", default = NULL, 
+              help="See help of main.nf", metavar="character"),
   make_option(c("--splicesite_hotspots"), type="character", default = NULL, 
               help="See help of main.nf", metavar="character"),
   make_option(c("--indel_hotspots"), type="character", default = NULL,
@@ -29,7 +31,7 @@ opt_parser <- OptionParser(option_list = option_list)
 opt        <- parse_args(opt_parser)
 
 # check if mandatory arguments were provided, show help menu otherwise
-if ( is.null(opt[["mutations"]]) | is.null(opt[["tumor_ID"]]) | is.null(opt[["hotspots"]]) | is.null(opt[["splicesite_hotspots"]]) || is.null(opt[["indel_hotspots"]]) ) {
+if ( is.null(opt[["mutations"]]) | is.null(opt[["tumor_ID"]]) | is.null(opt[["hotspots"]]) | is.null(opt[["noncoding_hotspots"]]) | is.null(opt[["splicesite_hotspots"]]) | is.null(opt[["indel_hotspots"]]) ) {
   print_help(opt_parser)
   print(opt)
   stop("One or more mandatory arguments missing.", call=FALSE)
@@ -50,14 +52,17 @@ muts$AA.pos.end <- gsub("[^0-9]+([0-9]+).+", "\\1", sub("^[^_]+_", "", sub("p.",
 muts$c.pos <- "."
 muts$c.pos[grepl("^c\\.", muts$HGVS_C)] <- gsub("^(c\\.[0-9\\*-][0-9]*).+$", "\\1", muts$HGVS_C[grepl("^c\\.", muts$HGVS_C)])
 
-# the hotspot files have 'chr' prefix
-muts$CHROM[which(!grepl("chr", muts$CHROM))] <- paste0("chr", muts$CHROM[which(!grepl("chr", muts$CHROM))])
 
 
 ########################
 ### exonic hotspots  ###
 ########################
 hotspots <- read.delim(as.character(opt[["hotspots"]]), as.is = T)
+
+# if the mutation input has no 'chr' prefix, remove it from the hotspot lists
+if(!any(grepl("chr", muts$CHROM))){
+  hotspots$CHROM[which(grepl("chr", hotspots$CHROM))] <- gsub("chr", "",hotspots$CHROM[which(grepl("chr", hotspots$CHROM))])
+}
 
 # remove hotspot3D
 if ( opt[["skip_3D"]] == "yes" ) {
@@ -98,10 +103,44 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotspot),])) > 0) {
 }
 
 
+
+
+#############################
+### non-coding hotspots   ###
+#############################
+noncoding <- read.delim(as.character(opt[["noncoding_hotspots"]]), as.is = T)
+
+# if the mutation input has no 'chr' prefix, remove it from the hotspot lists
+if(!any(grepl("chr", muts$CHROM))){
+  noncoding$CHROM[which(grepl("chr", noncoding$CHROM))] <- gsub("chr", "",noncoding$CHROM[which(grepl("chr", noncoding$CHROM))])
+}
+
+# noncoding hotspots need to be an exact match of chr, pos and alt base. Just save the 'noncoding hotspots' rows with an exact match.
+noncoding$matchID <- paste(noncoding$CHROM,noncoding$POS,noncoding$REF,noncoding$ALT,sep=";")
+muts$matchID <- paste(muts$CHROM, muts$POS, muts$REF, muts$ALT,sep=";")
+
+if(any(muts$matchID %in% noncoding$matchID)){
+  vcf_hotspotNC <- noncoding[which(noncoding$matchID %in% muts$matchID),]
+  vcf_hotspotNC$FILTER <- "PASS"
+  vcf_hotspotNC <- vcf_hotspotNC[c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")]
+  colnames(vcf_hotspotNC) <- c("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
+  write.table(vcf_hotspotNC, file = paste0(opt[["tumor_ID"]],"_hotspot_noncoding.vcf"), row.names = F, quote = F, sep = '\t')
+} else {
+  cat("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", file = paste0(opt[["tumor_ID"]],"_hotspot_noncoding.vcf"))
+}
+
+
+
+
 ############################
 ### splicesite hotspots  ###
 ############################
 splice <- read.delim(as.character(opt[["splicesite_hotspots"]]), as.is = T)
+
+# if the mutation input has no 'chr' prefix, remove it from the hotspot lists
+if(!any(grepl("chr", muts$CHROM))){
+  splice$CHROM[which(grepl("chr", splice$CHROM))] <- gsub("chr", "",splice$CHROM[which(grepl("chr", splice$CHROM))])
+}
 
 # go over each mut row and fetch same chrom/gene/pos/ in splice. Consider only splice_acceptor_variant/splice_donor_variant because other effects are not real splicing effects, and we don't want to be tagging those.
 
@@ -143,6 +182,11 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotsplice),])) > 0) {
 
 indel <- read.delim(as.character(opt[["indel_hotspots"]]), as.is = T)
 
+# if the mutation input has no 'chr' prefix, remove it from the hotspot lists
+if(!any(grepl("chr", muts$CHROM))){
+  indel$CHROM[which(grepl("chr", indel$CHROM))] <- gsub("chr", "",indel$CHROM[which(grepl("chr", indel$CHROM))])
+}
+
 # go over each mut row and fetch same chrom/gene/aa_start/aa_end/ in indel. Consider only inframe indels, we don't want to be tagging other frameshifts.
 
 muts$hotindel <- apply(muts, 1, function(x){
@@ -173,4 +217,3 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotindel),])) > 0) {
 } else {
   cat("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", file = paste0(opt[["tumor_ID"]],"_hotspot_indel.vcf"))
 }
-
