@@ -8,9 +8,60 @@ Original hotspots were aggregated into `resources/hg19.hotspots_changv2_gao_nc.v
 
 We therefore sought to make the hotspot annotation more stringent by accounting for different mutation types (SNVs and indels), and genomic effects (missense, frameshifts, splice variants etc.), and by referring to the hotspot amino acid position for SNV and indel variants, and codon positions for splice variants, instead of relying on genomic coordinates.
 
+##### !!! NOTE !!!
+Some canonical transcripts used by `SnpEff v.4.3t` differ between `hg19` and `hg38`. A noteworthy case is `CDKN2A` whose canonical transcript in `hg19` corresponds to an alternative reading frame. A workaround is to force `SnpEff` to use a different canonical transcript with the option `-canonList`. In case of `hg19` you should run `SnpEff` like this:
+```
+echo -e "ENSG00000147889\tENST00000498124" > CDKN2A.canon &&snpeff -canon -canonList CDKN2A.canon <options>
+```
+
+### How to use this tool?
+This tool is meant to be part of the following strategy:
+1. Annotate your VCF with `SnpEff` as described above.
+2. Convert the annotated VCF to a table, split each effect to a single row (same variant can be listed multiple times, but every row has one effect on one gene).
+3. Run `prepareHotspotVCFs.R` on the variant table (see usage below).
+4. Use the resulting VCFs, plus the `hotspots_non_coding.hg[19|38].vcf`, to annotate your original VCF using SnpSift
+
+### R script usage
+`Rscript prepareHotspotVCFs.R --help`
+```
+Usage: prepareHotspotVCFs.R [options]
+
+
+Options:
+	--mutations=CHARACTER
+		Mutation table
+
+	--tumor_ID=CHARACTER
+		Used as prefix
+
+	--hotspots=CHARACTER
+		Hotspot table (hotspots_single_aa_change.hg[19|38].txt)
+
+	--splicesite_hotspots=CHARACTER
+		Splice hotspot table (hotspots_splice.hg[19|38].txt)
+
+	--indel_hotspots=CHARACTER
+		Indel hotspot table (hotspots_indel.txt)
+
+	--skip_3D=CHARACTER
+		[yes|no] Omit 3D hotspots
+
+	-h, --help
+		Show this help message and exit
+```
+
+### Output
+```
+<tumor_ID>_hotspot.vcf
+<tumor_ID>_hotspot_indel.vcf
+<tumor_ID>_hotspot_sp.vcf
+```
+
 ### Overview of the creation of the new hotspot resources
 #### 1. Hotspot annotation based on the current `SnpEff` used in our pipelines
 In order to base our lookup on amino acid or codon positions, it is necessary to annotate the hotspot VCFs in the same way we annotate our somatic variants, i.e. using `SnpEff v.4.3t` with the `-canon` option.
+
+Original hotspots annotated using `SnpEff -canon -canonList CDKN2A.canon -no-intergenic -noNextProt -no-downstream -no-upstream -nointeraction -nomotif -noStats [GRCh37.75|GRCh38.86]`
 ```
 resources/hg19.hotspots_changv2_gao_nc.snpeff.tab.gz
 resources/hg38.hotspots_changv2_gao_nc.snpeff.tab.gz
@@ -74,7 +125,7 @@ Lookup rules:
 
 
 #### 5. Non-coding hotspots
-Non-coding hotspots remain in their original VCF format because they affect specific genomic regions.
+Non-coding hotspots remain in their original VCF format because they affect specific genomic regions. They are not processed by `Rscript prepareHotspotVCFs.R` because they can be used directly by `SnpSift`.
 
 Final hotspots:
 ```
@@ -85,5 +136,3 @@ hotspots_non_coding.hg38.vcf
 Lookup rules:
 1. Variant has to occur in the same region as the non-coding hotspot.
 
-### Caveats
-Some canonical transcripts used by `SnpEff v.4.3t` differ between `hg19` and `hg38`. A noteworthy case is `CDKN2A` whose canonical transcript in `hg19` corresponds to an alternative reading frame. A possible workaround would be to use `VEP` instead of `SnpEff` (whose canonical transcripts might be biologically more relevant), or to force `SnpEff` to use `VEP` canonical transcripts with the option `-canonList`.
