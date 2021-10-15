@@ -11,17 +11,19 @@ library("optparse")
 # define argument list and data types
 option_list <- list(
   make_option(c("--mutations"), type="character", default = NULL, 
-              help="Mutation table", metavar="character"),
+              help="See help of main.nf", metavar="character"),
   make_option(c("--tumor_ID"), type="character", default = NULL, 
-               help="Used as prefix", metavar="character"),
+               help="See help of main.nf", metavar="character"),
   make_option(c("--hotspots"), type="character", default = NULL, 
-              help="Hotspot table (single amino acid hotspots)", metavar="character"),
+              help="See help of main.nf", metavar="character"),
+  make_option(c("--noncoding_hotspots"), type="character", default = NULL, 
+              help="See help of main.nf", metavar="character"),
   make_option(c("--splicesite_hotspots"), type="character", default = NULL, 
-              help="Splice hotspot table", metavar="character"),
+              help="See help of main.nf", metavar="character"),
   make_option(c("--indel_hotspots"), type="character", default = NULL,
-              help="Indel hotspot table", metavar="character"),
+              help="See help of main.nf", metavar="character"),
   make_option(c("--skip_3D"), type="character", default = "yes",
-              help="[yes|no] Omit 3D hotspots", metavar="character")
+              help="[yes|no] See help of main.nf", metavar="character")
 )
 
 # parse arguments
@@ -100,6 +102,30 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotspot),])) > 0) {
   cat("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", file = paste0(opt[["tumor_ID"]],"_hotspot.vcf"))
 }
 
+
+#############################
+### non-coding hotspots   ###
+#############################
+noncoding <- read.delim(as.character(opt[["noncoding_hotspots"]]), as.is = T)
+
+# if the mutation input has no 'chr' prefix, remove it from the hotspot lists
+if(!any(grepl("chr", muts$CHROM))){
+  noncoding$CHROM[which(grepl("chr", noncoding$CHROM))] <- gsub("chr", "",noncoding$CHROM[which(grepl("chr", noncoding$CHROM))])
+}
+
+# noncoding hotspots need to be an exact match of chr, pos and alt base. Just save the 'noncoding hotspots' rows with an exact match.
+noncoding$matchID <- paste(noncoding$CHROM,noncoding$POS,noncoding$REF,noncoding$ALT,sep=";")
+muts$matchID <- paste(muts$CHROM, muts$POS, muts$REF, muts$ALT,sep=";")
+
+if(any(muts$matchID %in% noncoding$matchID)){
+  vcf_hotspotNC <- noncoding[which(noncoding$matchID %in% muts$matchID),]
+  vcf_hotspotNC$FILTER <- "PASS"
+  vcf_hotspotNC <- vcf_hotspotNC[c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")]
+  colnames(vcf_hotspotNC) <- c("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
+  write.table(vcf_hotspotNC, file = paste0(opt[["tumor_ID"]],"_hotspot_noncoding.vcf"), row.names = F, quote = F, sep = '\t')
+} else {
+  cat("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", file = paste0(opt[["tumor_ID"]],"_hotspot_noncoding.vcf"))
+}
 
 
 ############################
