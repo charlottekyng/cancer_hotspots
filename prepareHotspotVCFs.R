@@ -11,19 +11,19 @@ library("optparse")
 # define argument list and data types
 option_list <- list(
   make_option(c("--mutations"), type="character", default = NULL, 
-              help="See help of main.nf", metavar="character"),
+              help="Mutation table", metavar="character"),
   make_option(c("--tumor_ID"), type="character", default = NULL, 
-               help="See help of main.nf", metavar="character"),
+               help="Used as prefix", metavar="character"),
   make_option(c("--hotspots"), type="character", default = NULL, 
-              help="See help of main.nf", metavar="character"),
+              help="Hotspot table (single amino acid hotspots)", metavar="character"),
   make_option(c("--noncoding_hotspots"), type="character", default = NULL, 
-              help="See help of main.nf", metavar="character"),
+              help="Non-coding hotspot table", metavar="character"),
   make_option(c("--splicesite_hotspots"), type="character", default = NULL, 
-              help="See help of main.nf", metavar="character"),
+              help="Splice hotspot table", metavar="character"),
   make_option(c("--indel_hotspots"), type="character", default = NULL,
-              help="See help of main.nf", metavar="character"),
+              help="Indel hotspot table", metavar="character"),
   make_option(c("--skip_3D"), type="character", default = "yes",
-              help="[yes|no] See help of main.nf", metavar="character")
+              help="[yes|no] Omit 3D hotspots. Default yes.", metavar="character")
 )
 
 # parse arguments
