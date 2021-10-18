@@ -126,14 +126,14 @@ Lookup rules:
 
 
 #### 5. Non-coding hotspots
-Non-coding hotspots remain in their original VCF format because they affect specific genomic regions. They are not processed by `Rscript prepareHotspotVCFs.R` because they can be used directly by `SnpSift`.
+Non-coding hotspots target specific non-exonic region.
 
 Final hotspots:
 ```
-hotspots_non_coding.hg19.vcf
-hotspots_non_coding.hg38.vcf
+hotspots_non_coding.hg19.txt
+hotspots_non_coding.hg38.txt
 ```
 
 Lookup rules:
-1. Variant has to occur in the same region as the non-coding hotspot.
+1. Variant has to be identical to the non-coding hotspot.
 
