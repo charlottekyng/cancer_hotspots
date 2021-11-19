@@ -40,6 +40,8 @@ if ( is.null(opt[["mutations"]]) | is.null(opt[["tumor_ID"]]) | is.null(opt[["ho
 
 muts <- read.delim(as.character(opt[["mutations"]]), as.is = T)
 colnames(muts) <- sub("ANN....", "", colnames(muts))
+# CHROM must be as.character
+muts$CHROM <- as.character(muts$CHROM)
 
 # split AA col
 muts$AA.ref <- gsub("[0-9].+", "", sub("p.", "", muts$AA))
