@@ -39,7 +39,9 @@ if ( is.null(opt[["mutations"]]) | is.null(opt[["tumor_ID"]]) | is.null(opt[["ho
 
 
 muts <- read.delim(as.character(opt[["mutations"]]), as.is = T)
-colnames(muts) <- sub("ANN....", "", colnames(muts))
+colnames(muts) <- sub("ANN\\.+", "", colnames(muts))
+# AA could be named HGVS_P
+colnames(muts) <- sub("HGVS_P", "AA", colnames(muts))
 # CHROM must be as.character
 muts$CHROM <- as.character(muts$CHROM)
 
