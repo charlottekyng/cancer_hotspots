@@ -23,7 +23,9 @@ option_list <- list(
   make_option(c("--indel_hotspots"), type="character", default = NULL,
               help="Indel hotspot table", metavar="character"),
   make_option(c("--skip_3D"), type="character", default = "yes",
-              help="[yes|no] Omit 3D hotspots. Default yes.", metavar="character")
+              help="[yes|no] Omit 3D hotspots. Default yes.", metavar="character"),
+  make_option(c("--save_table"), type="character", default = "yes",
+              help="[yes|no] Save results in a single table. Default yes.", metavar="character")
 )
 
 # parse arguments
@@ -160,7 +162,7 @@ muts$hotsplice <- paste0(muts$hotsplice, "sp")
 # save VCF where muts$hotsplice had a hit
 # for <SnpSift annotate> we need VCF cols #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
 # FILTER must be all PASS, everything that is in INFO will be passed to the annotated vcf.
-# if ther are no hits, save empty header so that we have an output for every sample
+# if there are no hits, save empty header so that we have an output for every sample
 if (length(rownames(muts[grepl("HOTSPOT", muts$hotsplice),])) > 0) {
   vcf_hotsplice <- muts[grepl("HOTSPOT", muts$hotsplice),]
   vcf_hotsplice$QUAL <- "."
@@ -205,7 +207,7 @@ muts$hotindel <- paste0(muts$hotindel, "indel")
 # save VCF where muts$hotindel had a hit
 # for <SnpSift annotate> we need VCF cols #CHROM    POS    ID    REF    ALT    QUAL    FILTER    INFO
 # FILTER must be all PASS, everything that is in INFO will be passed to the annotated vcf.
-# if not hits, save empty header so that we have an output for every sample
+# if there are no hits, save empty header so that we have an output for every sample
 if (length(rownames(muts[grepl("HOTSPOT", muts$hotindel),])) > 0) {
   vcf_hotindel <- muts[grepl("HOTSPOT", muts$hotindel),]
   vcf_hotindel$QUAL <- "."
@@ -217,3 +219,43 @@ if (length(rownames(muts[grepl("HOTSPOT", muts$hotindel),])) > 0) {
 } else {
   cat("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", file = paste0(opt[["tumor_ID"]],"_hotspot_indel.vcf"))
 }
+
+
+# save table
+if ( opt[["save_table"]] == "yes" ) {
+  keys <- c("HOTSPOTaa", "HOTSPOT3Daa", "HOTSPOTindel", "HOTSPOTsp")
+  muts_res <- muts[apply(muts, 1, function(x) any(x %in% keys)), ]
+  muts_res <- muts_res[c("CHROM", "POS", "ID", "REF", "ALT", "EFFECT", "GENE", "hotspot", "hotsplice", "hotindel")]
+
+  # add "." for no hits
+  muts_res$hotspot <- sub("^.aa", ".", muts_res$hotspot)
+  muts_res$hotsplice <- sub("^.sp", ".", muts_res$hotsplice)
+  muts_res$hotindel <- sub("^.indel", ".", muts_res$hotindel)
+  
+  # add non-coding results, if any
+  if (length(rownames(muts_res)) > 0 ) {
+    muts_res$hotspotnc <- "."
+  }
+  if ( exists("vcf_hotspotNC") ) {
+    vcf_hotspotNC$hotspotnc <- "HOTSPOTNC"
+    vcf_hotspotNC$GENE <- gsub("HOTSPOTNC;HOTSPOTNC_GENE=([^;]+);.+", "\\1", vcf_hotspotNC$INFO)
+    vcf_hotspotNC$EFFECT <- "."
+    vcf_hotspotNC$hotspot <- "."
+    vcf_hotspotNC$hotsplice <- "."
+    vcf_hotspotNC$hotindel <- "."
+    vcf_hotspotNC <- vcf_hotspotNC[c("#CHROM", "POS", "ID", "REF", "ALT", "EFFECT", "GENE", "hotspot", "hotsplice", "hotindel", "hotspotnc")]
+    colnames(vcf_hotspotNC) <- c("CHROM", "POS", "ID", "REF", "ALT", "EFFECT", "GENE", "hotspot", "hotsplice", "hotindel", "hotspotnc")
+    
+    muts_res <- rbind(muts_res, vcf_hotspotNC)
+  }
+  
+  # write table (add a SAMPLE column)
+  if (length(rownames(muts_res)) > 0 ) {
+    muts_res$SAMPLE <- basename(opt[["tumor_ID"]])
+    muts_res <- muts_res[c("SAMPLE", "CHROM", "POS", "ID", "REF", "ALT", "EFFECT", "GENE", "hotspot", "hotsplice", "hotindel", "hotspotnc")]
+    write.table(muts_res, file = paste0(opt[["tumor_ID"]],"_hotspots.tsv"), row.names = F, quote = F, sep = '\t')
+  } else {
+  cat("SAMPLE\tCHROM\tPOS\tID\tREF\tALT\tEFFECT\tGENE\thotspot\thotsplice\thotindel\thotspotnc\n", file = paste0(opt[["tumor_ID"]],"_hotspots.tsv"))
+  }
+}
+
