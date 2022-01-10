@@ -47,6 +47,9 @@ Options:
 	--skip_3D=CHARACTER
 		[yes|no] Omit 3D hotspots
 
+	--save_table=CHARACTER
+		[yes|no] Save results in a single table. Default yes.
+
 	-h, --help
 		Show this help message and exit
 ```
