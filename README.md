@@ -18,7 +18,7 @@ echo -e "ENSG00000147889\tENST00000498124" > CDKN2A.canon &&snpeff -canon -canon
 This tool is meant to be part of the following strategy:
 1. Annotate your VCF with `SnpEff` as described above.
 2. Convert the annotated VCF to a table, split each effect to a single row (same variant can be listed multiple times, but every row has one effect on one gene).
-The table should be made using `SnpSift extractFields -s "|" -e "." "ANN[*].EFFECT" "ANN[*].GENE" "ANN[*].HGVS_C" "ANN[*].AA"`. Note, `AA` is equivalent to `HGVS_P`, which will be recognized by the script. Other columns will be ignored.
+The table should be made using `SnpSift extractFields -s "|" -e "." <vcf file> CHROM POS ID REF ALT QUAL FILTER "ANN[*].EFFECT" "ANN[*].GENE" "ANN[*].HGVS_C" "ANN[*].AA"`. Note, `AA` is equivalent to `HGVS_P`, which will be recognized by the script. Other columns will be ignored.
 3. Run `prepareHotspotVCFs.R` on the variant table (see usage below).
 4. Use the resulting VCFs, plus the `hotspots_non_coding.hg[19|38].vcf`, to annotate your original VCF using SnpSift
 
