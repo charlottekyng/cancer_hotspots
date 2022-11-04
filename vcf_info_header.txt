@@ -1,0 +1,14 @@
+##INFO=<ID=HOTSPOTaa,Number=0,Type=Flag,Description="HOTSPOT flag">
+##INFO=<ID=HOTSPOTaa_GENE,Number=1,Type=String,Description="HOTSPOT HUGO gene symbol">
+##INFO=<ID=HOTSPOTaa_AA,Number=A,Type=String,Description="HOTSPOT amino acid">
+##INFO=<ID=HOTSPOT3Daa,Number=0,Type=Flag,Description="HOTSPOT3D flag">
+##INFO=<ID=HOTSPOT3Daa_GENE,Number=1,Type=String,Description="HOTSPOT3D HUGO gene symbol">
+##INFO=<ID=HOTSPOT3Daa_AA,Number=A,Type=String,Description="HOTSPOT3D amino acid">
+##INFO=<ID=HOTSPOTsp,Number=0,Type=Flag,Description="HOTSPOTsp flag">
+##INFO=<ID=HOTSPOTsp_GENE,Number=1,Type=String,Description="HOTSPOTsp HUGO gene symbol">
+##INFO=<ID=HOTSPOTsp_c,Number=A,Type=String,Description="HOTSPOTsp codon">
+##INFO=<ID=HOTSPOTindel,Number=0,Type=Flag,Description="HOTSPOTindel flag">
+##INFO=<ID=HOTSPOTindel_GENE,Number=1,Type=String,Description="HOTSPOTindel HUGO gene symbol">
+##INFO=<ID=HOTSPOTNC,Number=0,Type=Flag,Description="Hotspot flag">
+##INFO=<ID=HOTSPOTNC_GENE,Number=1,Type=String,Description="HOTSPOTnc HUGO gene symbol">
+##INFO=<ID=HOTSPOTNC_HGVSc,Number=A,Type=String,Description="HOTSPOTnc HGVSc">
