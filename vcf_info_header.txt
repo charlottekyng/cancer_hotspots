@@ -7,6 +7,7 @@
 ##INFO=<ID=HOTSPOTsp,Number=0,Type=Flag,Description="HOTSPOTsp flag">
 ##INFO=<ID=HOTSPOTsp_GENE,Number=1,Type=String,Description="HOTSPOTsp HUGO gene symbol">
 ##INFO=<ID=HOTSPOTsp_c,Number=A,Type=String,Description="HOTSPOTsp codon">
+##INFO=<ID=HOTSPOTsp_c.pos,Number=A,Type=String,Description="HOTSPOTsp codon position">
 ##INFO=<ID=HOTSPOTindel,Number=0,Type=Flag,Description="HOTSPOTindel flag">
 ##INFO=<ID=HOTSPOTindel_GENE,Number=1,Type=String,Description="HOTSPOTindel HUGO gene symbol">
 ##INFO=<ID=HOTSPOTNC,Number=0,Type=Flag,Description="Hotspot flag">
